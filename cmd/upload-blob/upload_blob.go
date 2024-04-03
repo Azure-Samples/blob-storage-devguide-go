@@ -18,7 +18,6 @@ func handleError(err error) {
 }
 
 func uploadBlobFile(client azblob.Client, containerName string, blobName string) {
-
 	// Open the file for reading
 	file, err := os.OpenFile("path/to/sample/file", os.O_RDONLY, 0)
 	handleError(err)
@@ -40,7 +39,6 @@ func uploadBlobBuffer(client azblob.Client, containerName string, blobName strin
 }
 
 func main() {
-
 	// TODO: replace <storage-account-name> with your actual storage account name
 	url := "https://<storage-account-name>.blob.core.windows.net/"
 
