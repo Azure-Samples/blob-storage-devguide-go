@@ -57,8 +57,8 @@ func setBlobMetadata(client azblob.Client, containerName string, blobName string
 
 	// Set the blob metadata
 	var metadata = make(map[string]*string)
-	metadata["type"] = to.Ptr("image")
-	metadata["category"] = to.Ptr("high-res")
+	metadata["key1"] = to.Ptr("value1")
+	metadata["key2"] = to.Ptr("value2")
 
 	_, err := blobClient.SetMetadata(context.TODO(), metadata, nil)
 	handleError(err)
