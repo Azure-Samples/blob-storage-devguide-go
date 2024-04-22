@@ -10,7 +10,7 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 )
 
-// Blob dev guide properties/metadata sample
+// Blob dev guide container properties/metadata sample
 
 func handleError(err error) {
 	if err != nil {
