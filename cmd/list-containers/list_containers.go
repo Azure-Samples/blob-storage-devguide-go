@@ -17,7 +17,7 @@ func handleError(err error) {
 	}
 }
 
-func listContainers(client azblob.Client) {
+func listContainers(client *azblob.Client) {
 	// List the containers in the storage account
 	pager := client.NewListContainersPager(&azblob.ListContainersOptions{})
 
@@ -41,5 +41,5 @@ func main() {
 	client, err := azblob.NewClient(url, credential, nil)
 	handleError(err)
 
-	listContainers(*client)
+	listContainers(client)
 }

@@ -19,7 +19,7 @@ func handleError(err error) {
 	}
 }
 
-func setBlobProperties(client azblob.Client, containerName string, blobName string) {
+func setBlobProperties(client *azblob.Client, containerName string, blobName string) {
 	// Reference the blob as a client object
 	blobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
 
@@ -38,7 +38,7 @@ func setBlobProperties(client azblob.Client, containerName string, blobName stri
 	handleError(err)
 }
 
-func getBlobProperties(client azblob.Client, containerName string, blobName string) {
+func getBlobProperties(client *azblob.Client, containerName string, blobName string) {
 	// Reference the blob as a client object
 	blobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
 
@@ -51,7 +51,7 @@ func getBlobProperties(client azblob.Client, containerName string, blobName stri
 	fmt.Printf("Content language: %v\n", *resp.ContentLanguage)
 }
 
-func setBlobMetadata(client azblob.Client, containerName string, blobName string) {
+func setBlobMetadata(client *azblob.Client, containerName string, blobName string) {
 	// Reference the blob as a client object
 	blobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
 
@@ -64,7 +64,7 @@ func setBlobMetadata(client azblob.Client, containerName string, blobName string
 	handleError(err)
 }
 
-func getBlobMetadata(client azblob.Client, containerName string, blobName string) {
+func getBlobMetadata(client *azblob.Client, containerName string, blobName string) {
 	// Reference the blob as a client object
 	blobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
 
@@ -91,8 +91,8 @@ func main() {
 	containerName := "sample-container"
 	blobName := "sample-blob"
 
-	setBlobProperties(*client, containerName, blobName)
-	getBlobProperties(*client, containerName, blobName)
-	setBlobMetadata(*client, containerName, blobName)
-	getBlobMetadata(*client, containerName, blobName)
+	setBlobProperties(client, containerName, blobName)
+	getBlobProperties(client, containerName, blobName)
+	setBlobMetadata(client, containerName, blobName)
+	getBlobMetadata(client, containerName, blobName)
 }

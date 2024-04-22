@@ -16,13 +16,13 @@ func handleError(err error) {
 	}
 }
 
-func createContainer(client azblob.Client, containerName string) {
+func createContainer(client *azblob.Client, containerName string) {
 	// Create a container
 	_, err := client.CreateContainer(context.TODO(), containerName, nil)
 	handleError(err)
 }
 
-func createRootContainer(client azblob.Client) {
+func createRootContainer(client *azblob.Client) {
 	// Create root container
 	_, err := client.CreateContainer(context.TODO(), "$root", nil)
 	handleError(err)
@@ -41,6 +41,6 @@ func main() {
 
 	containerName := "sample-container"
 
-	createContainer(*client, containerName)
-	createRootContainer(*client)
+	createContainer(client, containerName)
+	createRootContainer(client)
 }

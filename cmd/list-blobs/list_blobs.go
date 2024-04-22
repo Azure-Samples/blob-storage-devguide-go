@@ -17,7 +17,7 @@ func handleError(err error) {
 	}
 }
 
-func listBlobsFlat(client azblob.Client, containerName string) {
+func listBlobsFlat(client *azblob.Client, containerName string) {
 	// List the blobs in the container
 	pager := client.NewListBlobsFlatPager(containerName, &azblob.ListBlobsFlatOptions{
 		Include: azblob.ListBlobsInclude{Snapshots: true, Versions: true},
@@ -45,5 +45,5 @@ func main() {
 
 	containerName := "sample-container"
 
-	listBlobsFlat(*client, containerName)
+	listBlobsFlat(client, containerName)
 }

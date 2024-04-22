@@ -16,13 +16,13 @@ func handleError(err error) {
 	}
 }
 
-func deleteContainer(client azblob.Client, containerName string) {
+func deleteContainer(client *azblob.Client, containerName string) {
 	// Delete the container
 	_, err := client.DeleteContainer(context.TODO(), containerName, nil)
 	handleError(err)
 }
 
-func restoreDeletedContainer(client azblob.Client, containerName string) {
+func restoreDeletedContainer(client *azblob.Client, containerName string) {
 	// List containers, included deleted ones
 	pager := client.NewListContainersPager(&azblob.ListContainersOptions{
 		Include: azblob.ListContainersInclude{Deleted: true},
@@ -54,6 +54,6 @@ func main() {
 
 	containerName := "sample-container"
 
-	deleteContainer(*client, containerName)
-	restoreDeletedContainer(*client, containerName)
+	deleteContainer(client, containerName)
+	restoreDeletedContainer(client, containerName)
 }

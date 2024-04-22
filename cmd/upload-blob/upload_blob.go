@@ -17,7 +17,7 @@ func handleError(err error) {
 	}
 }
 
-func uploadBlobFile(client azblob.Client, containerName string, blobName string) {
+func uploadBlobFile(client *azblob.Client, containerName string, blobName string) {
 	// Open the file for reading
 	file, err := os.OpenFile("path/to/sample/file", os.O_RDONLY, 0)
 	handleError(err)
@@ -29,7 +29,7 @@ func uploadBlobFile(client azblob.Client, containerName string, blobName string)
 	handleError(err)
 }
 
-func uploadBlobBuffer(client azblob.Client, containerName string, blobName string) {
+func uploadBlobBuffer(client *azblob.Client, containerName string, blobName string) {
 	// Create a buffer with the content of the file to upload
 	data := []byte("Hello, world!")
 
@@ -51,6 +51,6 @@ func main() {
 	containerName := "sample-container"
 	blobName := "sample-blob"
 
-	uploadBlobFile(*client, containerName, blobName)
-	uploadBlobBuffer(*client, containerName, blobName)
+	uploadBlobFile(client, containerName, blobName)
+	uploadBlobBuffer(client, containerName, blobName)
 }

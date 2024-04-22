@@ -17,13 +17,13 @@ func handleError(err error) {
 	}
 }
 
-func deleteBlob(client azblob.Client, containerName string, blobName string) {
+func deleteBlob(client *azblob.Client, containerName string, blobName string) {
 	// Delete the blob
 	_, err := client.DeleteBlob(context.TODO(), containerName, blobName, nil)
 	handleError(err)
 }
 
-func restoreDeletedBlob(client azblob.Client, containerName string, blobName string) {
+func restoreDeletedBlob(client *azblob.Client, containerName string, blobName string) {
 	// Reference the blob as a client object
 	blobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
 
@@ -45,6 +45,6 @@ func main() {
 	containerName := "sample-container"
 	blobName := "sample-blob"
 
-	deleteBlob(*client, containerName, blobName)
-	restoreDeletedBlob(*client, containerName, blobName)
+	deleteBlob(client, containerName, blobName)
+	restoreDeletedBlob(client, containerName, blobName)
 }

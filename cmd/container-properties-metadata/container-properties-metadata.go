@@ -18,7 +18,7 @@ func handleError(err error) {
 	}
 }
 
-func getContainerProperties(client azblob.Client, containerName string) {
+func getContainerProperties(client *azblob.Client, containerName string) {
 	// Reference the container as a client object
 	containerClient := client.ServiceClient().NewContainerClient(containerName)
 
@@ -33,7 +33,7 @@ func getContainerProperties(client azblob.Client, containerName string) {
 	fmt.Printf("Has immutability policy: %v\n", *resp.HasImmutabilityPolicy)
 }
 
-func setContainerMetadata(client azblob.Client, containerName string) {
+func setContainerMetadata(client *azblob.Client, containerName string) {
 	// Reference the container as a client object
 	containerClient := client.ServiceClient().NewContainerClient(containerName)
 
@@ -46,7 +46,7 @@ func setContainerMetadata(client azblob.Client, containerName string) {
 	handleError(err)
 }
 
-func getContainerMetadata(client azblob.Client, containerName string) {
+func getContainerMetadata(client *azblob.Client, containerName string) {
 	// Reference the container as a client object
 	containerClient := client.ServiceClient().NewContainerClient(containerName)
 
@@ -72,7 +72,7 @@ func main() {
 
 	containerName := "sample-container"
 
-	getContainerProperties(*client, containerName)
-	setContainerMetadata(*client, containerName)
-	getContainerMetadata(*client, containerName)
+	getContainerProperties(client, containerName)
+	setContainerMetadata(client, containerName)
+	getContainerMetadata(client, containerName)
 }
