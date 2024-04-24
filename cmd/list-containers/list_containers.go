@@ -18,12 +18,54 @@ func handleError(err error) {
 }
 
 func listContainers(client *azblob.Client) {
-	// List the containers in the storage account
-	pager := client.NewListContainersPager(&azblob.ListContainersOptions{})
+	// List the containers in the storage account and include metadata
+	pager := client.NewListContainersPager(&azblob.ListContainersOptions{
+		Include: azblob.ListContainersInclude{Metadata: true},
+	})
 
 	for pager.More() {
 		resp, err := pager.NextPage(context.TODO())
 		handleError(err)
+
+		for _, container := range resp.ContainerItems {
+			fmt.Println(*container.Name)
+			for k, v := range container.Metadata {
+				fmt.Printf("%v: %v\n", k, *v)
+			}
+		}
+	}
+}
+
+func listContainersWithPrefix(client *azblob.Client, prefix string) {
+	// List the containers in the storage account with a prefix
+	pager := client.NewListContainersPager(&azblob.ListContainersOptions{
+		Prefix: &prefix,
+	})
+
+	for pager.More() {
+		resp, err := pager.NextPage(context.TODO())
+		handleError(err)
+
+		for _, container := range resp.ContainerItems {
+			fmt.Println(*container.Name)
+		}
+	}
+}
+
+func listContainersWithMaxResults(client *azblob.Client, maxResults int32) {
+	// List the containers in the storage account with a maximum number of results
+	pager := client.NewListContainersPager(&azblob.ListContainersOptions{
+		MaxResults: &maxResults,
+	})
+
+	i := 0
+	for pager.More() {
+		resp, err := pager.NextPage(context.TODO())
+		handleError(err)
+
+		// Show page number to demonstrate pagination with max results
+		i++
+		fmt.Printf("Page %d:\n", i)
 
 		for _, container := range resp.ContainerItems {
 			fmt.Println(*container.Name)
@@ -42,4 +84,6 @@ func main() {
 	handleError(err)
 
 	listContainers(client)
+	listContainersWithPrefix(client, "sample")
+	listContainersWithMaxResults(client, 2)
 }

@@ -50,11 +50,11 @@ func getContainerMetadata(client *azblob.Client, containerName string) {
 	// Reference the container as a client object
 	containerClient := client.ServiceClient().NewContainerClient(containerName)
 
-	// Get the blob properties, which includes metadata
+	// Get the container properties, which includes metadata
 	resp, err := containerClient.GetProperties(context.TODO(), nil)
 	handleError(err)
 
-	// Print the blob metadata
+	// Print the container metadata
 	for k, v := range resp.Metadata {
 		fmt.Printf("%v: %v\n", k, *v)
 	}
