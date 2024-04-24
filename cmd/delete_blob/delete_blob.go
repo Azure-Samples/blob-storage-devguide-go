@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob/blob"
@@ -20,6 +21,14 @@ func handleError(err error) {
 func deleteBlob(client *azblob.Client, containerName string, blobName string) {
 	// Delete the blob
 	_, err := client.DeleteBlob(context.TODO(), containerName, blobName, nil)
+	handleError(err)
+}
+
+func deleteBlobWithSnapshots(client *azblob.Client, containerName string, blobName string) {
+	// Delete the blob and its snapshots
+	_, err := client.DeleteBlob(context.TODO(), containerName, blobName, &blob.DeleteOptions{
+		DeleteSnapshots: to.Ptr(blob.DeleteSnapshotsOptionTypeInclude),
+	})
 	handleError(err)
 }
 
@@ -46,5 +55,6 @@ func main() {
 	blobName := "sample-blob"
 
 	deleteBlob(client, containerName, blobName)
+	deleteBlobWithSnapshots(client, containerName, blobName)
 	restoreDeletedBlob(client, containerName, blobName)
 }
