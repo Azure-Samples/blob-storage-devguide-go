@@ -41,6 +41,18 @@ func restoreDeletedBlob(client *azblob.Client, containerName string, blobName st
 	handleError(err)
 }
 
+func restoreDeletedBlobVersion(client *azblob.Client, containerName string, blobName string, versionID string) {
+	// Reference the blob as a client object
+	baseBlobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
+
+	blobVersionClient, err := baseBlobClient.WithVersionID(versionID)
+	handleError(err)
+
+	// Restore the blob version by copying it to the base blob
+	_, err = baseBlobClient.StartCopyFromURL(context.TODO(), blobVersionClient.URL(), nil)
+	handleError(err)
+}
+
 func main() {
 	// TODO: replace <storage-account-name> with your actual storage account name
 	url := "https://<storage-account-name>.blob.core.windows.net/"
@@ -57,4 +69,5 @@ func main() {
 	deleteBlob(client, containerName, blobName)
 	deleteBlobWithSnapshots(client, containerName, blobName)
 	restoreDeletedBlob(client, containerName, blobName)
+	restoreDeletedBlobVersion(client, containerName, blobName, "version-id")
 }
