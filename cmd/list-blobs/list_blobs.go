@@ -50,7 +50,7 @@ func listBlobsHierarchy(client *azblob.Client, containerName string, prefix stri
 
 		// Check to see if the result is a prefix or a blob
 		for _, prefix := range resp.Segment.BlobPrefixes {
-			fmt.Println("Prefix:", *prefix.Name)
+			fmt.Println("Virtual directory prefix:", *prefix.Name)
 
 			// Recursively list blobs in the prefix
 			listBlobsHierarchy(client, containerName, *prefix.Name)
