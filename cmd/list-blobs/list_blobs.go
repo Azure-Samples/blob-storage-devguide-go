@@ -25,6 +25,24 @@ func listBlobsFlat(client *azblob.Client, containerName string) {
 		Include: azblob.ListBlobsInclude{Snapshots: true, Versions: true},
 	})
 
+	fmt.Println("List blobs flat:")
+	for pager.More() {
+		resp, err := pager.NextPage(context.TODO())
+		handleError(err)
+
+		for _, blob := range resp.Segment.BlobItems {
+			fmt.Println(*blob.Name)
+		}
+	}
+}
+
+func listBlobsFlatOptions(client *azblob.Client, containerName string, prefix string) {
+	// List the blobs in the container with a prefix
+	pager := client.NewListBlobsFlatPager(containerName, &azblob.ListBlobsFlatOptions{
+		Prefix: to.Ptr(prefix),
+	})
+
+	fmt.Println("List blobs with prefix:")
 	for pager.More() {
 		resp, err := pager.NextPage(context.TODO())
 		handleError(err)
@@ -40,20 +58,21 @@ func listBlobsHierarchy(client *azblob.Client, containerName string, prefix stri
 	containerClient := client.ServiceClient().NewContainerClient(containerName)
 
 	pager := containerClient.NewListBlobsHierarchyPager("/", &container.ListBlobsHierarchyOptions{
-		Include: container.ListBlobsInclude{Metadata: true},
-		Prefix:  to.Ptr(prefix),
+		Prefix:     to.Ptr(prefix),
+		MaxResults: to.Ptr(int32(1)), // MaxResults set to 1 for demonstration purposes
 	})
 
 	for pager.More() {
 		resp, err := pager.NextPage(context.TODO())
 		handleError(err)
 
-		// Check to see if the result is a prefix or a blob
-		for _, prefix := range resp.Segment.BlobPrefixes {
-			fmt.Println("Virtual directory prefix:", *prefix.Name)
+		if resp.Segment.BlobPrefixes != nil {
+			for _, prefix := range resp.Segment.BlobPrefixes {
+				fmt.Println("Virtual directory prefix:", *prefix.Name)
 
-			// Recursively list blobs in the prefix
-			listBlobsHierarchy(client, containerName, *prefix.Name)
+				// Recursively list blobs in the prefix
+				listBlobsHierarchy(client, containerName, *prefix.Name)
+			}
 		}
 
 		for _, blob := range resp.Segment.BlobItems {
@@ -75,5 +94,6 @@ func main() {
 	containerName := "sample-container"
 
 	listBlobsFlat(client, containerName)
-	listBlobsHierarchy(client, containerName, "/")
+	listBlobsFlatOptions(client, containerName, "sample")
+	listBlobsHierarchy(client, containerName, "")
 }
