@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob/blob"
@@ -23,12 +24,32 @@ func deleteBlob(client *azblob.Client, containerName string, blobName string) {
 	handleError(err)
 }
 
+func deleteBlobWithSnapshots(client *azblob.Client, containerName string, blobName string) {
+	// Delete the blob and its snapshots
+	_, err := client.DeleteBlob(context.TODO(), containerName, blobName, &blob.DeleteOptions{
+		DeleteSnapshots: to.Ptr(blob.DeleteSnapshotsOptionTypeInclude),
+	})
+	handleError(err)
+}
+
 func restoreDeletedBlob(client *azblob.Client, containerName string, blobName string) {
 	// Reference the blob as a client object
 	blobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
 
 	// Restore the deleted blob
 	_, err := blobClient.Undelete(context.TODO(), &blob.UndeleteOptions{})
+	handleError(err)
+}
+
+func restoreDeletedBlobVersion(client *azblob.Client, containerName string, blobName string, versionID string) {
+	// Reference the blob as a client object
+	baseBlobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
+
+	blobVersionClient, err := baseBlobClient.WithVersionID(versionID)
+	handleError(err)
+
+	// Restore the blob version by copying it to the base blob
+	_, err = baseBlobClient.StartCopyFromURL(context.TODO(), blobVersionClient.URL(), nil)
 	handleError(err)
 }
 
@@ -46,5 +67,7 @@ func main() {
 	blobName := "sample-blob"
 
 	deleteBlob(client, containerName, blobName)
+	deleteBlobWithSnapshots(client, containerName, blobName)
 	restoreDeletedBlob(client, containerName, blobName)
+	restoreDeletedBlobVersion(client, containerName, blobName, "version-id")
 }
