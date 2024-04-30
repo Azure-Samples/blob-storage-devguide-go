@@ -17,6 +17,7 @@ func handleError(err error) {
 	}
 }
 
+// <snippet_list_containers>
 func listContainers(client *azblob.Client) {
 	// List the containers in the storage account and include metadata
 	pager := client.NewListContainersPager(&azblob.ListContainersOptions{
@@ -36,6 +37,9 @@ func listContainers(client *azblob.Client) {
 	}
 }
 
+// </snippet_list_containers>
+
+// <snippet_list_containers_prefix>
 func listContainersWithPrefix(client *azblob.Client, prefix string) {
 	// List the containers in the storage account with a prefix
 	pager := client.NewListContainersPager(&azblob.ListContainersOptions{
@@ -52,6 +56,9 @@ func listContainersWithPrefix(client *azblob.Client, prefix string) {
 	}
 }
 
+// </snippet_list_containers_prefix>
+
+// <snippet_list_containers_pages>
 func listContainersWithMaxResults(client *azblob.Client, maxResults int32) {
 	// List the containers in the storage account with a maximum number of results
 	pager := client.NewListContainersPager(&azblob.ListContainersOptions{
@@ -72,6 +79,8 @@ func listContainersWithMaxResults(client *azblob.Client, maxResults int32) {
 		}
 	}
 }
+
+// </snippet_list_containers_pages>
 
 func main() {
 	// TODO: replace <storage-account-name> with your actual storage account name

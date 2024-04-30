@@ -18,6 +18,7 @@ func handleError(err error) {
 	}
 }
 
+// <snippet_upload_blob_file>
 func uploadBlobFile(client *azblob.Client, containerName string, blobName string) {
 	// Open the file for reading
 	file, err := os.OpenFile("path/to/sample/file", os.O_RDONLY, 0)
@@ -30,6 +31,9 @@ func uploadBlobFile(client *azblob.Client, containerName string, blobName string
 	handleError(err)
 }
 
+// </snippet_upload_blob_file>
+
+// <snippet_upload_blob_buffer>
 func uploadBlobBuffer(client *azblob.Client, containerName string, blobName string) {
 	// Create a buffer with the content of the file to upload
 	data := []byte("Hello, world!")
@@ -39,6 +43,9 @@ func uploadBlobBuffer(client *azblob.Client, containerName string, blobName stri
 	handleError(err)
 }
 
+// </snippet_upload_blob_buffer>
+
+// <snippet_upload_blob_stream>
 func uploadBlobStream(client *azblob.Client, containerName string, blobName string) {
 	data := "Hello, world!"
 	blobContentReader := strings.NewReader(data)
@@ -48,6 +55,9 @@ func uploadBlobStream(client *azblob.Client, containerName string, blobName stri
 	handleError(err)
 }
 
+// </snippet_upload_blob_stream>
+
+// <snippet_upload_blob_tags>
 func uploadBlobWithIndexTags(client *azblob.Client, containerName string, blobName string) {
 	// Create a buffer with the content of the file to upload
 	data := []byte("Hello, world!")
@@ -62,6 +72,9 @@ func uploadBlobWithIndexTags(client *azblob.Client, containerName string, blobNa
 	handleError(err)
 }
 
+// </snippet_upload_blob_tags>
+
+// <snippet_upload_blob_transfer_options>
 func uploadBlobWithTransferOptions(client *azblob.Client, containerName string, blobName string) {
 	// Open the file for reading
 	file, err := os.OpenFile("path/to/sample/file", os.O_RDONLY, 0)
@@ -77,6 +90,8 @@ func uploadBlobWithTransferOptions(client *azblob.Client, containerName string, 
 		})
 	handleError(err)
 }
+
+// </snippet_upload_blob_transfer_options>
 
 func main() {
 	// TODO: replace <storage-account-name> with your actual storage account name

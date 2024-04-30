@@ -18,6 +18,7 @@ func handleError(err error) {
 	}
 }
 
+// <snippet_get_container_properties>
 func getContainerProperties(client *azblob.Client, containerName string) {
 	// Reference the container as a client object
 	containerClient := client.ServiceClient().NewContainerClient(containerName)
@@ -33,6 +34,9 @@ func getContainerProperties(client *azblob.Client, containerName string) {
 	fmt.Printf("Has immutability policy: %v\n", *resp.HasImmutabilityPolicy)
 }
 
+// </snippet_get_container_properties>
+
+// <snippet_set_container_metadata>
 func setContainerMetadata(client *azblob.Client, containerName string) {
 	// Reference the container as a client object
 	containerClient := client.ServiceClient().NewContainerClient(containerName)
@@ -46,6 +50,9 @@ func setContainerMetadata(client *azblob.Client, containerName string) {
 	handleError(err)
 }
 
+// </snippet_set_container_metadata>
+
+// <snippet_get_container_metadata>
 func getContainerMetadata(client *azblob.Client, containerName string) {
 	// Reference the container as a client object
 	containerClient := client.ServiceClient().NewContainerClient(containerName)
@@ -59,6 +66,8 @@ func getContainerMetadata(client *azblob.Client, containerName string) {
 		fmt.Printf("%v: %v\n", k, *v)
 	}
 }
+
+// </snippet_get_container_metadata>
 
 func main() {
 	// TODO: replace <storage-account-name> with your actual storage account name

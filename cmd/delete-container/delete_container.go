@@ -16,12 +16,16 @@ func handleError(err error) {
 	}
 }
 
+// <snippet_delete_container>
 func deleteContainer(client *azblob.Client, containerName string) {
 	// Delete the container
 	_, err := client.DeleteContainer(context.TODO(), containerName, nil)
 	handleError(err)
 }
 
+// </snippet_delete_container>
+
+// <snippet_restore_container>
 func restoreDeletedContainer(client *azblob.Client, containerName string) {
 	// List containers, included deleted ones
 	pager := client.NewListContainersPager(&azblob.ListContainersOptions{
@@ -41,6 +45,8 @@ func restoreDeletedContainer(client *azblob.Client, containerName string) {
 		}
 	}
 }
+
+// </snippet_restore_container>
 
 func main() {
 	// TODO: replace <storage-account-name> with your actual storage account name

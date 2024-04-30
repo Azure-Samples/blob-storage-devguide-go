@@ -19,6 +19,7 @@ func handleError(err error) {
 	}
 }
 
+// <snippet_list_blobs_flat>
 func listBlobsFlat(client *azblob.Client, containerName string) {
 	// List the blobs in the container
 	pager := client.NewListBlobsFlatPager(containerName, &azblob.ListBlobsFlatOptions{
@@ -36,6 +37,9 @@ func listBlobsFlat(client *azblob.Client, containerName string) {
 	}
 }
 
+// </snippet_list_blobs_flat>
+
+// <snippet_list_blobs_flat_options>
 func listBlobsFlatOptions(client *azblob.Client, containerName string, prefix string) {
 	// List the blobs in the container with a prefix
 	pager := client.NewListBlobsFlatPager(containerName, &azblob.ListBlobsFlatOptions{
@@ -53,6 +57,9 @@ func listBlobsFlatOptions(client *azblob.Client, containerName string, prefix st
 	}
 }
 
+// </snippet_list_blobs_flat_options>
+
+// <snippet_list_blobs_hierarchical>
 func listBlobsHierarchy(client *azblob.Client, containerName string, prefix string) {
 	// Reference the container as a client object
 	containerClient := client.ServiceClient().NewContainerClient(containerName)
@@ -80,6 +87,8 @@ func listBlobsHierarchy(client *azblob.Client, containerName string, prefix stri
 		}
 	}
 }
+
+// </snippet_list_blobs_hierarchical>
 
 func main() {
 	// TODO: replace <storage-account-name> with your actual storage account name

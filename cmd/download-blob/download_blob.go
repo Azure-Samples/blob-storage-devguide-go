@@ -19,6 +19,7 @@ func handleError(err error) {
 	}
 }
 
+// <snippet_download_blob_stream>
 func downloadBlobToStream(client *azblob.Client, containerName string, blobName string) {
 	// Download the blob
 	get, err := client.DownloadStream(context.TODO(), containerName, blobName, nil)
@@ -37,6 +38,9 @@ func downloadBlobToStream(client *azblob.Client, containerName string, blobName 
 	fmt.Println(downloadedData.String())
 }
 
+// </snippet_download_blob_stream>
+
+// <snippet_download_blob_file>
 func downloadBlobToFile(client *azblob.Client, containerName string, blobName string) {
 	// Create or open a local file where we can download the blob
 	file, err := os.Create("path/to/sample/file")
@@ -46,6 +50,8 @@ func downloadBlobToFile(client *azblob.Client, containerName string, blobName st
 	_, err = client.DownloadFile(context.TODO(), containerName, blobName, file, nil)
 	handleError(err)
 }
+
+// </snippet_download_blob_file>
 
 func main() {
 
