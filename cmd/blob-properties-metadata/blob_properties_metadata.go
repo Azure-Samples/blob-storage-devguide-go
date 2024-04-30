@@ -19,6 +19,7 @@ func handleError(err error) {
 	}
 }
 
+// <snippet_set_blob_properties>
 func setBlobProperties(client *azblob.Client, containerName string, blobName string) {
 	// Reference the blob as a client object
 	blobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
@@ -38,6 +39,9 @@ func setBlobProperties(client *azblob.Client, containerName string, blobName str
 	handleError(err)
 }
 
+// </snippet_set_blob_properties>
+
+// <snippet_get_blob_properties>
 func getBlobProperties(client *azblob.Client, containerName string, blobName string) {
 	// Reference the blob as a client object
 	blobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
@@ -51,6 +55,9 @@ func getBlobProperties(client *azblob.Client, containerName string, blobName str
 	fmt.Printf("Content language: %v\n", *resp.ContentLanguage)
 }
 
+// </snippet_get_blob_properties>
+
+// <snippet_set_blob_metadata>
 func setBlobMetadata(client *azblob.Client, containerName string, blobName string) {
 	// Reference the blob as a client object
 	blobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
@@ -64,6 +71,9 @@ func setBlobMetadata(client *azblob.Client, containerName string, blobName strin
 	handleError(err)
 }
 
+// </snippet_set_blob_metadata>
+
+// <snippet_get_blob_metadata>
 func getBlobMetadata(client *azblob.Client, containerName string, blobName string) {
 	// Reference the blob as a client object
 	blobClient := client.ServiceClient().NewContainerClient(containerName).NewBlobClient(blobName)
@@ -77,6 +87,8 @@ func getBlobMetadata(client *azblob.Client, containerName string, blobName strin
 		fmt.Printf("%v: %v\n", k, *v)
 	}
 }
+
+// </snippet_get_blob_metadata>
 
 func main() {
 	// TODO: replace <storage-account-name> with your actual storage account name

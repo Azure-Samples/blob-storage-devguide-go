@@ -17,6 +17,7 @@ func handleError(err error) {
 	}
 }
 
+// <snippet_get_service_client_DAC>
 func getServiceClientTokenCredential(accountURL string) *azblob.Client {
 	// Create a new service client with token credential
 	credential, err := azidentity.NewDefaultAzureCredential(nil)
@@ -28,6 +29,9 @@ func getServiceClientTokenCredential(accountURL string) *azblob.Client {
 	return client
 }
 
+// </snippet_get_service_client_DAC>
+
+// <snippet_get_service_client_shared_key>
 func getServiceClientSharedKey(accountName string, accountKey string) *azblob.Client {
 	// Create a new service client with shared key credential
 	credential, err := azblob.NewSharedKeyCredential(accountName, accountKey)
@@ -41,6 +45,9 @@ func getServiceClientSharedKey(accountName string, accountKey string) *azblob.Cl
 	return client
 }
 
+// </snippet_get_service_client_shared_key>
+
+// <snippet_get_service_client_connection_string>
 func getServiceClientConnectionString(connectionString string) *azblob.Client {
 	// Create a new service client with connection string
 	client, err := azblob.NewClientFromConnectionString(connectionString, nil)
@@ -49,6 +56,9 @@ func getServiceClientConnectionString(connectionString string) *azblob.Client {
 	return client
 }
 
+// </snippet_get_service_client_connection_string>
+
+// <snippet_get_service_client_SAS>
 func getServiceClientSAS(accountURL string, sasToken string) *azblob.Client {
 	// Create a new service client with an existing SAS token
 
@@ -60,6 +70,8 @@ func getServiceClientSAS(accountURL string, sasToken string) *azblob.Client {
 
 	return client
 }
+
+// </snippet_get_service_client_SAS>
 
 func main() {
 	// TODO: Replace placeholders with your actual values for testing purposes
