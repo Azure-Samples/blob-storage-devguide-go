@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
@@ -20,13 +21,13 @@ func handleError(err error) {
 	}
 }
 
-// <snippet_copy_from_source_url>
+// <snippet_copy_from_source_async>
 func copyFromSourceAsync(srcBlob *blockblob.Client, destBlob *blockblob.Client) {
 	// Lease the source blob during copy to prevent other clients from modifying it
 	blobLeaseClient, err := lease.NewBlobClient(srcBlob, nil)
 	handleError(err)
 
-	_, err = blobLeaseClient.AcquireLease(context.TODO(), int32(15), nil)
+	_, err = blobLeaseClient.AcquireLease(context.TODO(), int32(60), nil)
 	handleError(err)
 
 	// Retrieve the SAS token for the source blob and append it to the URL
@@ -39,32 +40,44 @@ func copyFromSourceAsync(srcBlob *blockblob.Client, destBlob *blockblob.Client) 
 	}
 
 	// Copy the blob from the source URL to the destination blob
-	_, err = destBlob.StartCopyFromURL(context.TODO(), url, &copyOptions)
+	startCopy, err := destBlob.StartCopyFromURL(context.TODO(), url, &copyOptions)
 	handleError(err)
+
+	if *startCopy.CopyStatus == blob.CopyStatusTypePending {
+		fmt.Println("Copy operation started asynchronously")
+		// If startCopy.CopyStatus returns a status of "pending", the operation has started asynchronously
+		// You can optionally add logic to wait for the copy operation to complete
+	}
 
 	// Release the lease on the source blob
 	_, err = blobLeaseClient.ReleaseLease(context.TODO(), nil)
 	handleError(err)
 }
 
-// </snippet_copy_from_source_url>
+// </snippet_copy_from_source_async>
 
-// <snippet_copy_from_external_source>
+// <snippet_copy_from_external_source_async>
 func copyFromExternalSource(srcURL string, destBlob *blockblob.Client) {
 	// Set copy options
-	copyOptions := blockblob.UploadBlobFromURLOptions{
+	copyOptions := blob.StartCopyFromURLOptions{
 		Tier: to.Ptr(blob.AccessTierCool),
 	}
 
 	// Copy the blob from the source URL to the destination blob
-	_, err := destBlob.UploadBlobFromURL(context.TODO(), srcURL, &copyOptions)
+	startCopy, err := destBlob.StartCopyFromURL(context.TODO(), srcURL, &copyOptions)
 	handleError(err)
+
+	if *startCopy.CopyStatus == blob.CopyStatusTypePending {
+		fmt.Println("Copy operation started asynchronously")
+		// If startCopy.CopyStatus returns a status of "pending", the operation has started asynchronously
+		// You can optionally add logic to wait for the copy operation to complete
+	}
 }
 
-// </snippet_copy_from_external_source>
+// </snippet_copy_from_external_source_async>
 
 func main() {
-	// <snippet_copy_from_source_url_usage>
+	// <snippet_copy_from_source_async_usage>
 	// TODO: replace <storage-account-name> placeholders with actual storage account names
 	srcURL := "https://<src-storage-account-name>.blob.core.windows.net/"
 	destURL := "https://<dest-storage-account-name>.blob.core.windows.net/"
@@ -81,13 +94,13 @@ func main() {
 	destBlob := destClient.ServiceClient().NewContainerClient("destination-container").NewBlockBlobClient("destination-blob-1")
 
 	copyFromSourceAsync(srcBlob, destBlob)
-	// </snippet_copy_from_source_url_usage>
+	// </snippet_copy_from_source_async_usage>
 
-	// <snippet_copy_from_external_source_usage>
-	//externalURL := "<source-url>"
+	// <snippet_copy_from_external_source_async_usage>
+	externalURL := "<source-url>"
 
-	//destBlob = destClient.ServiceClient().NewContainerClient("destination-container").NewBlockBlobClient("destination-blob-2")
+	destBlob = destClient.ServiceClient().NewContainerClient("destination-container").NewBlockBlobClient("destination-blob-2")
 
-	//copyFromExternalSource(externalURL, destBlob)
-	// </snippet_copy_from_external_source_usage>
+	copyFromExternalSource(externalURL, destBlob)
+	// </snippet_copy_from_external_source_async_usage>
 }
