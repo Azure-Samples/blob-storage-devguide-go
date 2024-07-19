@@ -57,7 +57,7 @@ func copyFromSourceAsync(srcBlob *blockblob.Client, destBlob *blockblob.Client) 
 // </snippet_copy_from_source_async>
 
 // <snippet_copy_from_external_source_async>
-func copyFromExternalSource(srcURL string, destBlob *blockblob.Client) {
+func copyFromExternalSourceAsync(srcURL string, destBlob *blockblob.Client) {
 	// Set copy options
 	copyOptions := blob.StartCopyFromURLOptions{
 		Tier: to.Ptr(blob.AccessTierCool),
@@ -75,6 +75,26 @@ func copyFromExternalSource(srcURL string, destBlob *blockblob.Client) {
 }
 
 // </snippet_copy_from_external_source_async>
+
+// <snippet_abort_copy>
+func abortCopy(destBlob *blockblob.Client) {
+	// Retrieve the copy ID from the destination blob
+	properties, err := destBlob.GetProperties(context.TODO(), nil)
+	handleError(err)
+
+	copyID := *properties.CopyID
+	copyStatus := *properties.CopyStatus
+
+	// Abort the copy operation if it's still pending
+	if copyStatus == blob.CopyStatusTypePending {
+		_, err := destBlob.AbortCopyFromURL(context.TODO(), copyID, nil)
+		handleError(err)
+
+		fmt.Printf("Copy operation %s aborted\n", copyID)
+	}
+}
+
+// </snippet_abort_copy>
 
 func main() {
 	// <snippet_copy_from_source_async_usage>
@@ -101,6 +121,6 @@ func main() {
 
 	destBlob = destClient.ServiceClient().NewContainerClient("destination-container").NewBlockBlobClient("destination-blob-2")
 
-	copyFromExternalSource(externalURL, destBlob)
+	copyFromExternalSourceAsync(externalURL, destBlob)
 	// </snippet_copy_from_external_source_async_usage>
 }
