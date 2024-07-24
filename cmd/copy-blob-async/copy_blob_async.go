@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
@@ -43,10 +44,17 @@ func copyFromSourceAsync(srcBlob *blockblob.Client, destBlob *blockblob.Client) 
 	startCopy, err := destBlob.StartCopyFromURL(context.TODO(), url, &copyOptions)
 	handleError(err)
 
-	if *startCopy.CopyStatus == blob.CopyStatusTypePending {
-		fmt.Println("Copy operation started asynchronously")
-		// If startCopy.CopyStatus returns a status of "pending", the operation has started asynchronously
-		// You can optionally add logic to wait for the copy operation to complete
+	// If startCopy.CopyStatus returns a status of "pending", the operation has started asynchronously
+	// You can optionally add logic to poll the copy status and wait for the operation to complete
+	// Example:
+	copyStatus := *startCopy.CopyStatus
+	for copyStatus == blob.CopyStatusTypePending {
+		time.Sleep(time.Second * 2)
+
+		properties, err := destBlob.GetProperties(context.TODO(), nil)
+		handleError(err)
+
+		copyStatus = *properties.CopyStatus
 	}
 
 	// Release the lease on the source blob
@@ -67,14 +75,35 @@ func copyFromExternalSourceAsync(srcURL string, destBlob *blockblob.Client) {
 	startCopy, err := destBlob.StartCopyFromURL(context.TODO(), srcURL, &copyOptions)
 	handleError(err)
 
-	if *startCopy.CopyStatus == blob.CopyStatusTypePending {
-		fmt.Println("Copy operation started asynchronously")
-		// If startCopy.CopyStatus returns a status of "pending", the operation has started asynchronously
-		// You can optionally add logic to wait for the copy operation to complete
+	// If startCopy.CopyStatus returns a status of "pending", the operation has started asynchronously
+	// You can optionally add logic to poll the copy status and wait for the operation to complete
+	// Example:
+	copyStatus := *startCopy.CopyStatus
+	for copyStatus == blob.CopyStatusTypePending {
+		time.Sleep(time.Second * 2)
+
+		properties, err := destBlob.GetProperties(context.TODO(), nil)
+		handleError(err)
+
+		copyStatus = *properties.CopyStatus
 	}
 }
 
 // </snippet_copy_from_external_source_async>
+
+// <snippet_check_copy_status>
+func checkCopyStatus(destBlob *blockblob.Client) {
+	// Retrieve the properties from the destination blob
+	properties, err := destBlob.GetProperties(context.TODO(), nil)
+	handleError(err)
+
+	copyID := *properties.CopyID
+	copyStatus := *properties.CopyStatus
+
+	fmt.Printf("Copy operation %s is %s\n", copyID, copyStatus)
+}
+
+// </snippet_check_copy_status>
 
 // <snippet_abort_copy>
 func abortCopy(destBlob *blockblob.Client) {
