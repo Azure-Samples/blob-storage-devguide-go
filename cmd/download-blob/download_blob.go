@@ -53,6 +53,20 @@ func downloadBlobToFile(client *azblob.Client, containerName string, blobName st
 
 // </snippet_download_blob_file>
 
+func downloadBlobTransferOptions(client *azblob.Client, containerName string, blobName string) {
+	// Create or open a local file where we can download the blob
+	file, err := os.Create("path/to/sample/file")
+	handleError(err)
+
+	// Download the blob to the local file
+	_, err = client.DownloadFile(context.TODO(), containerName, blobName, file,
+		&azblob.DownloadFileOptions{
+			BlockSize:   int64(4 * 1024 * 1024), // 4 MiB
+			Concurrency: uint16(2),
+		})
+	handleError(err)
+}
+
 func main() {
 
 	// TODO: replace <storage-account-name> with your actual storage account name
