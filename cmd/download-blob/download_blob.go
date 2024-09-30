@@ -53,6 +53,7 @@ func downloadBlobToFile(client *azblob.Client, containerName string, blobName st
 
 // </snippet_download_blob_file>
 
+// <snippet_download_blob_transfer_options>
 func downloadBlobTransferOptions(client *azblob.Client, containerName string, blobName string) {
 	// Create or open a local file where we can download the blob
 	file, err := os.Create("path/to/sample/file")
@@ -66,6 +67,8 @@ func downloadBlobTransferOptions(client *azblob.Client, containerName string, bl
 		})
 	handleError(err)
 }
+
+// </snippet_download_blob_transfer_options>
 
 func main() {
 
