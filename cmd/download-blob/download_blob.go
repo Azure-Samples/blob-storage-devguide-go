@@ -83,4 +83,5 @@ func main() {
 
 	downloadBlobToStream(client, containerName, blobName)
 	downloadBlobToFile(client, containerName, blobName)
+	downloadBlobTransferOptions(client, containerName, blobName)
 }
